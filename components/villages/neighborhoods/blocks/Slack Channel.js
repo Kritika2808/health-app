@@ -5,6 +5,7 @@ import UserMessage from './houses/User Message.js';
 import ChatBotMessage from './houses/Chat Bot Message.js';
 import * as firebase from "firebase";
 import update from 'immutability-helper';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 const database = firebase.database();
 const chatMessages = database.ref('chat-messages');
@@ -192,12 +193,26 @@ class SlackChannel extends React.Component {
           //render messages is true (demo)
           this.state.chatBlocksArr.map((chatBlock) => {
             return (
+              // <ReactCSSTransitionGroup
+              //   transitionName="example"
+              //   transitionAppear={true}
+              //   transitionAppearTimeout={3000}
+              //   transitionEnterTimeout={3000}
+              //   transitionLeaveTimeout={300}>
                 <div style={{overflow: 'hidden'}}>
                   <ChatBotMessage username="Bot" qTitle={chatBlock.selectedQuesTitle} qId={chatBlock.qid}/>
-                  <UserMessage username="Kritika" qId={chatBlock.qid} qValues={chatBlock.possibleValues}
-                    setQuesValue={this.setQuestionVal} selectedQuestionValue={chatBlock.selectedQuestionValue}/>
+                  <ReactCSSTransitionGroup
+                    transitionName="user-message"
+                    transitionAppear={true}
+                    transitionAppearTimeout={2000}
+                    transitionEnterTimeout={2000}
+                    transitionLeaveTimeout={200}>
+                    <UserMessage username="Kritika" qId={chatBlock.qid} qValues={chatBlock.possibleValues}
+                      setQuesValue={this.setQuestionVal} selectedQuestionValue={chatBlock.selectedQuestionValue}/>
+                  </ReactCSSTransitionGroup>
                 </div>
-              );
+              // </ReactCSSTransitionGroup>
+            );
           })
         ) : (
           //render nothing messages is false (landing page)

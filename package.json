@@ -12,6 +12,7 @@
     "firebase": "^4.0.0",
     "immutability-helper": "^2.7.1",
     "react": "^15.5.4",
+    "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^15.5.4",
     "react-grid-system": "^2.9.1",
     "react-router-dom": "^4.1.1"

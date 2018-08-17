@@ -179,3 +179,57 @@ hr {
   font-weight: 400;
   opacity: 0.8;
 }
+
+.example-enter {
+  opacity: 0.01;
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+  transition: opacity 3000ms ease-in;
+}
+
+.example-leave {
+  opacity: 1;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+.example-appear {
+  opacity: 0.01;
+}
+
+.example-appear.example-appear-active {
+  opacity: 1;
+  transition: opacity 3000ms ease-in;
+}
+
+.user-message-enter {
+  opacity: 0.01;
+}
+
+.user-message-enter.user-message-enter-active {
+  opacity: 1;
+  transition: opacity 3000ms ease-in;
+}
+
+.user-message-leave {
+  opacity: 1;
+}
+
+.user-message-leave.user-message-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+.user-message-appear {
+  opacity: 0.01;
+}
+
+.user-message-appear.user-message-appear-active {
+  opacity: 1;
+  transition: opacity 3000ms ease-in;
+}
