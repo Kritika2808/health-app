@@ -43,10 +43,7 @@ class SlackChannel extends React.Component {
                 qval: 'No',
               },
             ],
-            selectedQuestionValue: {
-              qid: 1.2,
-              qval: 'No',
-            },
+            selectedQuestionValue: '',
             childQuestions: [
               {
                 qid: 1.2,
@@ -61,10 +58,7 @@ class SlackChannel extends React.Component {
                     qval: 'No',
                   },
                 ],
-                selectedQuestionValue: {
-                  qid: 1.21,
-                  qval: 'Yes',
-                },
+                selectedQuestionValue: '',
                 childQuestions: []
               }
             ]
@@ -82,10 +76,7 @@ class SlackChannel extends React.Component {
                 qval: 'No',
               },
             ],
-            selectedQuestionValue: {
-              qid: 3.1,
-              qval: 'Yes',
-            },
+            selectedQuestionValue: '',
             childQuestions: []
           }
         ],
@@ -108,67 +99,67 @@ class SlackChannel extends React.Component {
       }
       this.setState({chatMessageVal: chatMessageVal, chatBlocksArr: [chatMessageVal]})
     })
-    // let firebaseAvatar;
-    // let firebaseUsername;
-    // let firebaseMessage;
-    // let firebaseArticle;
-
-    // let promise1 = new Promise((resolve, reject) => {
-    //   bot.on('value', function(snapshot) {
-    //     firebaseAvatar = snapshot.val().avatar;
-    //     resolve(firebaseAvatar);
-    //   });
-    // });
-
-    // let promise2 = new Promise((resolve, reject) => {
-    //   bot.on('value', function(snapshot) {
-    //     firebaseUsername = snapshot.val().username;
-    //     resolve(firebaseUsername);
-    //   });
-    // });
-
-    // let promise3 = new Promise((resolve, reject) => {
-    //   bot.on('value', function(snapshot) {
-    //     firebaseMessage = snapshot.val().message;
-    //     resolve(firebaseMessage);
-    //   });
-    // });
-
-    // let promise4 = new Promise((resolve, reject) => {
-    //   bot.on('value', function(snapshot) {
-    //     firebaseArticle = snapshot.val().article;
-    //     resolve(firebaseArticle);
-    //   });
-    // });
-
-    // Promise.all([promise1, promise2, promise3, promise4]).then(values => {
-    //   this.setState({avatar: values[0], username: values[1], message: values[2], article: values[3]})
-    //   console.log(values);
-    // });
-
-    // setTimeout(() => {
-    //   this.setState({showComponent: true});
-    // }, 1500)
   }
 
   setQuestionVal(event, questionId) {
     console.log('hey I am clicked')
-    console.log(event);
-    console.log(questionId);
+    console.log('event.target.value,', event.target.value);
+    console.log('parent question id,', questionId);
+    const newCopy = Object.assign({}, this.state.chatMessageVal);
     if(questionId === 0 && event.target && event.target.value) { // that means parent level
-      const newCopy = Object.assign({}, this.state.chatMessageVal);
+      
       newCopy.selectedQuestionValue = event.target.value; // selectedQuestionId
-      // this.setState({ filterStatus: [...this.state.filterStatus, newStatus] })
 
-      const nextChatMessage = this.findNextChatMessage(event.target.value, questionId)
+      const nextChatMessage = this.findNextChatMessage(event.target.value, questionId);
+      console.log('new copy is---,', newCopy)
+      const updatedChatMsgArr = this.createChatArr(newCopy);
       return this.setState({
         chatMessageVal: newCopy,
         chatBlocksArr: [...this.state.chatBlocksArr, nextChatMessage]
       });
-    } else {
-
+    } else if(event.target && event.target.value) { // that means not a root element
+      // set selected value in a child question
+      if(newCopy.childQuestions.length) {
+        
+        // newCopy.childQuestions.map((childQuestion) => {
+        //   if(newCopy.qid === Number(questionId) && childQuestion.qid === event.target.value) {
+        //     newCopy.selectedQuestionValue = event.target.value;
+        //   }
+        // })
+      }
     }
   };
+
+  setSelectedValueInChildQues(parentObj, selectedQuestionId, parentQuestionId) {
+    var quesSelected = false;
+    parentObj.childQuestions.every((childQuestion) => {
+      if(parentObj.qid === Number(parentQuestionId) && childQuestion.qid === selectedQuestionId) {
+        parentObj.selectedQuestionValue = selectedQuestionId;
+        return false;
+      }
+      if (childQuestion.childQuestions.length) {
+        const setChildObj = this.setSelectedValueInChildQues(childQuestion, selectedQuestionId, parentQuestionId);
+        childQuestion = setChildObj;
+      }
+    })
+    return parentObj;
+  }
+  // arr.every((item) => {
+  //   if(item.a == 1 || item.a == 3) {
+  //     item.a--;
+  //     return true;
+  //   } else {
+  //     item.a++;
+  //     return false;
+  //   }
+  // })
+
+  createChatArr(updatedChatMsgObj) {
+    const chatArr = [updatedChatMsgObj]; // for root questions
+    updatedChatMsgObj.childQuestions.map((childQuestion) => {
+
+    })
+  }
 
   findNextChatMessage(selectedQuestionId, parentQuestionId) {
     console.log('findNextChatMessage is called');
@@ -192,6 +183,7 @@ class SlackChannel extends React.Component {
         {this.state.chatBlocksArr.length ? (
           //render messages is true (demo)
           this.state.chatBlocksArr.map((chatBlock) => {
+            console.log('chatBlock,', chatBlock)
             return (
               // <ReactCSSTransitionGroup
               //   transitionName="example"

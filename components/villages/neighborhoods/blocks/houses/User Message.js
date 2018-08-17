@@ -22,48 +22,9 @@ class UserMessage extends React.Component {
     this.state = { username: "", message: "", showComponent: false, selectedQuestionValue: ''}
   }
 
-  // componentDidMount() {
-  //   let firebaseAvatar;
-  //   let firebaseUsername;
-  //   let firebaseMessage;
-
-  //   let promise1 = new Promise((resolve, reject) => {
-  //     user.on('value', function(snapshot) {
-  //       console.log('user value,', snapshot.val());
-  //       firebaseAvatar = snapshot.val().avatar;
-  //       resolve(firebaseAvatar);
-  //     });
-  //   });
-
-  //   let promise2 = new Promise((resolve, reject) => {
-  //     user.on('value', function(snapshot) {
-  //       firebaseUsername = snapshot.val().username;
-  //       resolve(firebaseUsername);
-  //     });
-  //   });
-
-  //   let promise3 = new Promise((resolve, reject) => {
-  //     user.on('value', function(snapshot) {
-  //       firebaseMessage = snapshot.val().message;
-  //       resolve(firebaseMessage);
-  //     });
-  //   });
-
-  //   Promise.all([promise1, promise2, promise3]).then(values => {
-  //     this.setState({avatar: values[0], username: values[1], message: values[2]})
-  //     console.log(values);
-  //   });
-
-  //   setTimeout(() => {
-  //     this.setState({showComponent: true});
-  //   }, 3000)
-
-  // }
-
   renderRadioWithLabel(qValue) {
     var isChecked = qValue.qid === Number(this.props.selectedQuestionValue);
     console.log('this.props.selectedQuestionValue,', this.props.selectedQuestionValue)
-    console.log('setQuesValue function,', this.props.setQuesValue)
     console.log('this.props.qId,', this.props.qId);
     return (
       <div style={{textAlign: 'left'}}>
