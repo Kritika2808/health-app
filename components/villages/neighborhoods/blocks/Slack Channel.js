@@ -10,6 +10,13 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 const database = firebase.database();
 const chatMessages = database.ref('chat-messages');
 
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+
+recognition.lang = 'en-US';
+recognition.interimResults = false;
+recognition.maxAlternatives = 1;
+
 class SlackChannel extends React.Component {
 
   constructor(props) {
@@ -19,6 +26,7 @@ class SlackChannel extends React.Component {
       chatBlocksArr:[]
     }
     this.setQuestionVal = this.setQuestionVal.bind(this);
+    this.synthVoice =  this.synthVoice.bind(this);
   }
 
   componentDidMount() {
@@ -220,6 +228,13 @@ class SlackChannel extends React.Component {
     return chatArr;
   }
 
+  synthVoice(text) {
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance();
+    utterance.text = text;
+    synth.speak(utterance);
+  }
+
   render() {
     //Boolean flag passed down for deciding what to render
     // const messages = this.props.messages;
@@ -238,7 +253,7 @@ class SlackChannel extends React.Component {
               //   transitionEnterTimeout={3000}
               //   transitionLeaveTimeout={300}>
                 <div style={{overflow: 'hidden'}}>
-                  <ChatBotMessage username="Bot" qTitle={chatBlock.selectedQuesTitle} qId={chatBlock.qid}/>
+                  <ChatBotMessage username="Bot" qTitle={chatBlock.selectedQuesTitle} qId={chatBlock.qid} synthVoice={this.synthVoice}/>
                   { chatBlock.possibleValues.length ? 
                   <ReactCSSTransitionGroup
                     transitionName="user-message"
@@ -247,7 +262,7 @@ class SlackChannel extends React.Component {
                     transitionEnterTimeout={500}
                     transitionLeaveTimeout={500}>
                     <UserMessage username="Kritika" qId={chatBlock.qid} qValues={chatBlock.possibleValues}
-                      setQuesValue={this.setQuestionVal} selectedQuestionValue={chatBlock.selectedQuestionValue}/>
+                      setQuesValue={this.setQuestionVal} selectedQuestionValue={chatBlock.selectedQuestionValue} synthVoice={this.synthVoice}/>
                   </ReactCSSTransitionGroup> : null }
                 </div>
               // </ReactCSSTransitionGroup>

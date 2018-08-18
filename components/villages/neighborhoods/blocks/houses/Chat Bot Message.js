@@ -11,53 +11,14 @@ class ChatBotMessage extends React.Component {
     this.state = {avatar: "", username: "", message: "", article: "", showComponent: false}
   }
 
-  // componentDidMount() {
-  //   let firebaseAvatar;
-  //   let firebaseUsername;
-  //   let firebaseMessage;
-  //   let firebaseArticle;
-
-  //   let promise1 = new Promise((resolve, reject) => {
-  //     bot.on('value', function(snapshot) {
-  //       firebaseAvatar = snapshot.val().avatar;
-  //       resolve(firebaseAvatar);
-  //     });
-  //   });
-
-  //   let promise2 = new Promise((resolve, reject) => {
-  //     bot.on('value', function(snapshot) {
-  //       firebaseUsername = snapshot.val().username;
-  //       resolve(firebaseUsername);
-  //     });
-  //   });
-
-  //   let promise3 = new Promise((resolve, reject) => {
-  //     bot.on('value', function(snapshot) {
-  //       firebaseMessage = snapshot.val().message;
-  //       resolve(firebaseMessage);
-  //     });
-  //   });
-
-  //   let promise4 = new Promise((resolve, reject) => {
-  //     bot.on('value', function(snapshot) {
-  //       firebaseArticle = snapshot.val().article;
-  //       resolve(firebaseArticle);
-  //     });
-  //   });
-
-  //   Promise.all([promise1, promise2, promise3, promise4]).then(values => {
-  //     this.setState({avatar: values[0], username: values[1], message: values[2], article: values[3]})
-  //     console.log(values);
-  //   });
-
-  //   setTimeout(() => {
-  //     this.setState({showComponent: true});
-  //   }, 1500)
-  // }
+  componentDidMount() {
+    this.props.synthVoice(this.props.qTitle); // coming twice, check later
+  }
 
   render() {
     // const showComponent = this.state.showComponent;
     const showComponent = true;
+    // this.props.synthVoice(this.props.qTitle);
     return (
       <div>
         {showComponent ? (

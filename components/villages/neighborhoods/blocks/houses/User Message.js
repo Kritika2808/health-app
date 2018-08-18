@@ -36,6 +36,12 @@ class UserMessage extends React.Component {
     );
   }
 
+  componentDidMount() {
+    this.props.qValues.map((qValue) => {
+      this.props.synthVoice(qValue.qval); // coming twice, check later
+    })
+  }
+
   render() {
     // const showComponent = this.state.showComponent;
     const showComponent = true;
