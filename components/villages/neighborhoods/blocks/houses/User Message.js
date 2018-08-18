@@ -33,7 +33,7 @@ recognition.addEventListener('result', (e) => {
   let last = e.results.length - 1;
   let text = e.results[last][0].transcript;
 
-  outputYou.textContent = text;
+  // outputYou.textContent = text;
   console.log('Confidence: ' + e.results[0][0].confidence);
 
   // socket.emit('chat message', text);
@@ -68,10 +68,12 @@ class UserMessage extends React.Component {
   }
 
   componentDidMount() {
-    this.props.qValues.map((qValue) => {
+    this.props.qValues.map((qValue, index) => {
       this.props.synthVoice(qValue.qval); // coming twice, check later
+      if(index === this.props.qValues.length - 1) {
+        recognition.start();
+      }
     })
-    recognition.start();
   }
 
   render() {
