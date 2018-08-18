@@ -19,7 +19,6 @@ class SlackChannel extends React.Component {
       chatBlocksArr:[]
     }
     this.setQuestionVal = this.setQuestionVal.bind(this);
-    this.findNextChatMessage = this.findNextChatMessage.bind(this);
   }
 
   componentDidMount() {
@@ -171,16 +170,13 @@ class SlackChannel extends React.Component {
     console.log('parent question id,', questionId);
     const newCopy = Object.assign({}, this.state.chatMessageVal);
     if(questionId === 0 && event.target && event.target.value) { // that means parent level
-      
       newCopy.selectedQuestionValue = event.target.value; // selectedQuestionId
     } else if(event.target && event.target.value) { // that means not a root element
       // set selected value in a child question
       if(newCopy.childQuestions.length) {
-        console.log('called once');
         this.setSelectedValueInChildQues(newCopy, event.target.value, questionId)
       }
     }
-      console.log('new copy is---,', newCopy)
       const chatArr = [newCopy]; // for root question
       const updatedChatMsgArr = this.createChatArr(chatArr, newCopy);
       return this.setState({
@@ -207,8 +203,6 @@ class SlackChannel extends React.Component {
  
   createChatArr(chatArray, updatedChatMsgObj) {
     let chatArr = chatArray;
-    console.log('chat arr before is,', chatArr);
-    console.log('updated chat msg obj,', updatedChatMsgObj);
     if(updatedChatMsgObj.childQuestions.length) {
       updatedChatMsgObj.childQuestions.every((childQuestion) => {
         console.log('child question ids,', childQuestion.qid);
@@ -223,21 +217,7 @@ class SlackChannel extends React.Component {
         return true;
       })
     }
-    console.log('chat arr after is,', chatArr);
     return chatArr;
-  }
-
-  findNextChatMessage(selectedQuestionId, parentQuestionId) {
-    console.log('findNextChatMessage is called');
-    let selectedChatMsg;
-    this.state.chatMessageVal.childQuestions.map((childQuestion) => {
-      if ((this.state.chatMessageVal.qid === Number(parentQuestionId)) && childQuestion.qid === Number(selectedQuestionId)) {
-        console.log('true')
-        selectedChatMsg = childQuestion;
-      }
-    })
-    console.log('selectedChatMsg,', selectedChatMsg)
-    return selectedChatMsg;
   }
 
   render() {
