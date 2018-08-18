@@ -25,8 +25,6 @@ class SlackChannel extends React.Component {
   componentDidMount() {
     let chatMessageVal;
     chatMessages.on('value', (chatMessageValues) => {
-      // chatMessageVal = chatMessageValues.val();
-      // console.log('chat messages,', chatMessageVal)
       chatMessageVal = {
         qid: 0,
         childQuestions: [
@@ -46,6 +44,39 @@ class SlackChannel extends React.Component {
             selectedQuestionValue: '',
             childQuestions: [
               {
+                qid: 1.1,
+                selectedQuesTitle: 'We\'ll track the ID and share status via email in 24h. Does that answer your question?',
+                possibleValues: [
+                  {
+                    qid: 1.11,
+                    qval: 'Yeap',
+                  },
+                  {
+                    qid: 1.12,
+                    qval: 'Nah',
+                  },
+                ],
+                selectedQuestionValue: '',
+                childQuestions: [{
+                  qid: 1.11,
+                  selectedQuesTitle: 'Cool the result is 1.11!!',
+                    possibleValues: [
+                      
+                    ],
+                    selectedQuestionValue: '',
+                    childQuestions: []
+                },
+                {
+                  qid: 1.12,
+                  selectedQuesTitle: 'Cool the result is 1.12!!',
+                    possibleValues: [
+                      
+                    ],
+                    selectedQuestionValue: '',
+                    childQuestions: []
+                }]
+              },
+              {
                 qid: 1.2,
                 selectedQuesTitle: 'We\'ll track the ID and share status via email in 24h. Does that answer your question?',
                 possibleValues: [
@@ -59,7 +90,23 @@ class SlackChannel extends React.Component {
                   },
                 ],
                 selectedQuestionValue: '',
-                childQuestions: []
+                childQuestions: [{
+                  qid: 1.21,
+                  selectedQuesTitle: 'Cool the result is 1.21!!',
+                    possibleValues: [
+                      
+                    ],
+                    selectedQuestionValue: '',
+                    childQuestions: []
+                },{
+                  qid: 1.22,
+                  selectedQuesTitle: 'Cool the result is 1.22!!',
+                    possibleValues: [
+                      
+                    ],
+                    selectedQuestionValue: '',
+                    childQuestions: []
+                }]
               }
             ]
           },
@@ -69,15 +116,32 @@ class SlackChannel extends React.Component {
             possibleValues: [
               {
                 qid: 3.1,
-                qval: 'Yes',
+                qval: 'Yayy',
               },
               {
                 qid: 3.2,
-                qval: 'No',
+                qval: 'Nayyy',
               },
             ],
             selectedQuestionValue: '',
-            childQuestions: []
+            childQuestions: [{
+              qid: 3.1,
+              selectedQuesTitle: 'Cool the result is 3.1!!',
+                possibleValues: [
+                  
+                ],
+                selectedQuestionValue: '',
+                childQuestions: []
+            },
+            {
+              qid: 3.2,
+              selectedQuesTitle: 'Cool the result is 3.2!!',
+                possibleValues: [
+                  
+                ],
+                selectedQuestionValue: '',
+                childQuestions: []
+            }]
           }
         ],
         selectedQuesTitle: "Chat box begins here. Type base query",
@@ -109,56 +173,58 @@ class SlackChannel extends React.Component {
     if(questionId === 0 && event.target && event.target.value) { // that means parent level
       
       newCopy.selectedQuestionValue = event.target.value; // selectedQuestionId
-
-      const nextChatMessage = this.findNextChatMessage(event.target.value, questionId);
-      console.log('new copy is---,', newCopy)
-      const updatedChatMsgArr = this.createChatArr(newCopy);
-      return this.setState({
-        chatMessageVal: newCopy,
-        chatBlocksArr: [...this.state.chatBlocksArr, nextChatMessage]
-      });
     } else if(event.target && event.target.value) { // that means not a root element
       // set selected value in a child question
       if(newCopy.childQuestions.length) {
-        
-        // newCopy.childQuestions.map((childQuestion) => {
-        //   if(newCopy.qid === Number(questionId) && childQuestion.qid === event.target.value) {
-        //     newCopy.selectedQuestionValue = event.target.value;
-        //   }
-        // })
+        console.log('called once');
+        this.setSelectedValueInChildQues(newCopy, event.target.value, questionId)
       }
     }
+      console.log('new copy is---,', newCopy)
+      const chatArr = [newCopy]; // for root question
+      const updatedChatMsgArr = this.createChatArr(chatArr, newCopy);
+      return this.setState({
+        chatMessageVal: newCopy,
+        chatBlocksArr: updatedChatMsgArr
+      });
   };
 
   setSelectedValueInChildQues(parentObj, selectedQuestionId, parentQuestionId) {
-    var quesSelected = false;
+    console.log('parent obj before setting value in setSelectedValueInChildQues,', parentObj);
     parentObj.childQuestions.every((childQuestion) => {
-      if(parentObj.qid === Number(parentQuestionId) && childQuestion.qid === selectedQuestionId) {
+      if(parentObj.qid === Number(parentQuestionId) && childQuestion.qid === Number(selectedQuestionId)) {
+        console.log('matched child question');
         parentObj.selectedQuestionValue = selectedQuestionId;
         return false;
       }
       if (childQuestion.childQuestions.length) {
-        const setChildObj = this.setSelectedValueInChildQues(childQuestion, selectedQuestionId, parentQuestionId);
-        childQuestion = setChildObj;
+        this.setSelectedValueInChildQues(childQuestion, selectedQuestionId, parentQuestionId);
       }
+      return true;
     })
-    return parentObj;
+    console.log('parent obj after setting value in setSelectedValueInChildQues,', parentObj);
   }
-  // arr.every((item) => {
-  //   if(item.a == 1 || item.a == 3) {
-  //     item.a--;
-  //     return true;
-  //   } else {
-  //     item.a++;
-  //     return false;
-  //   }
-  // })
-
-  createChatArr(updatedChatMsgObj) {
-    const chatArr = [updatedChatMsgObj]; // for root questions
-    updatedChatMsgObj.childQuestions.map((childQuestion) => {
-
-    })
+ 
+  createChatArr(chatArray, updatedChatMsgObj) {
+    let chatArr = chatArray;
+    console.log('chat arr before is,', chatArr);
+    console.log('updated chat msg obj,', updatedChatMsgObj);
+    if(updatedChatMsgObj.childQuestions.length) {
+      updatedChatMsgObj.childQuestions.every((childQuestion) => {
+        console.log('child question ids,', childQuestion.qid);
+        if(Number(updatedChatMsgObj.selectedQuestionValue) === Number(childQuestion.qid)) {
+          console.log('yayyyyy');
+          chatArr.push(childQuestion);
+          if (childQuestion.childQuestions.length) {
+            chatArr = this.createChatArr(chatArr, childQuestion); 
+          }
+          return false;
+        }
+        return true;
+      })
+    }
+    console.log('chat arr after is,', chatArr);
+    return chatArr;
   }
 
   findNextChatMessage(selectedQuestionId, parentQuestionId) {
@@ -193,15 +259,16 @@ class SlackChannel extends React.Component {
               //   transitionLeaveTimeout={300}>
                 <div style={{overflow: 'hidden'}}>
                   <ChatBotMessage username="Bot" qTitle={chatBlock.selectedQuesTitle} qId={chatBlock.qid}/>
+                  { chatBlock.possibleValues.length ? 
                   <ReactCSSTransitionGroup
                     transitionName="user-message"
                     transitionAppear={true}
-                    transitionAppearTimeout={2000}
-                    transitionEnterTimeout={2000}
-                    transitionLeaveTimeout={200}>
+                    transitionAppearTimeout={500}
+                    transitionEnterTimeout={500}
+                    transitionLeaveTimeout={500}>
                     <UserMessage username="Kritika" qId={chatBlock.qid} qValues={chatBlock.possibleValues}
                       setQuesValue={this.setQuestionVal} selectedQuestionValue={chatBlock.selectedQuestionValue}/>
-                  </ReactCSSTransitionGroup>
+                  </ReactCSSTransitionGroup> : null }
                 </div>
               // </ReactCSSTransitionGroup>
             );
