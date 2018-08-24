@@ -6,6 +6,7 @@ import ChatBotMessage from './houses/Chat Bot Message.js';
 import * as firebase from "firebase";
 import update from 'immutability-helper';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+// import { resolve } from 'dns';
 
 const database = firebase.database();
 const chatMessages = database.ref('chat-messages');
@@ -13,7 +14,7 @@ const chatMessages = database.ref('chat-messages');
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new SpeechRecognition();
 
-recognition.lang = 'en-US';
+recognition.lang = 'hi-IN';
 recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 
@@ -27,6 +28,8 @@ class SlackChannel extends React.Component {
     }
     this.setQuestionVal = this.setQuestionVal.bind(this);
     this.synthVoice =  this.synthVoice.bind(this);
+    window.speechSynthesis.cancel();
+    window.utterances = [];
   }
 
   componentDidMount() {
@@ -229,10 +232,43 @@ class SlackChannel extends React.Component {
   }
 
   synthVoice(text) {
-    const synth = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance();
-    utterance.text = text;
-    synth.speak(utterance);
+    
+    let promise = new Promise(function(resolve, reject) {
+      
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance();
+      // window.speechSynthesis.cancel();
+      // const synth = window.speechSynthesis;
+      // const utterance = new SpeechSynthesisUtterance();
+      utterance.text = text;
+      // utterance.lang = 'hi-IN';
+      console.log('text is,', text);
+      utterance.onstart = function(event) {
+        console.log('start for text,', event.currentTarget.text);
+        console.log('The utterance started to be spoken.')
+        const t = event.timeStamp;
+        console.log('timestamp is', t);
+      };
+      utterance.onend = function(event) {
+        // console.log('on end called')
+        // console.log('synth voice called with,', text)
+        console.log('end for text,', event.currentTarget.text);
+        console.log('The utterance has ended.')
+        // console.log(event.name + ' boundary reached after ' + event.elapsedTime + ' milliseconds.');
+        // resolve(event.currentTarget.text);
+        const t = event.timeStamp;
+        console.log('timestamp is', t);
+      }
+      utterance.onerror = function(event) {
+        console.log('inside error')
+        // reject(event.currentTarget.text)
+        const t = event.timeStamp;
+        console.log('timestamp is', t);
+      }
+      window.utterances.push(utterance); // it was a chrome issue, some utterance events were not getting fired so when we keep utterance in a variable it works
+      synth.speak(utterance);
+    });
+    return promise;
   }
 
   render() {

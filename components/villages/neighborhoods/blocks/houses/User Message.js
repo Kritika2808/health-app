@@ -16,36 +16,36 @@ firebase.initializeApp(config);
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const recognition = new SpeechRecognition();
 
-recognition.lang = 'en-US';
-recognition.interimResults = false;
-recognition.maxAlternatives = 1;
+// recognition.lang = 'en-US';
+// recognition.interimResults = false;
+// recognition.maxAlternatives = 1;
 
-// const database = firebase.database();
-// const user = database.ref('user');
+// // const database = firebase.database();
+// // const user = database.ref('user');
 
-recognition.addEventListener('speechstart', () => {
-  console.log('Speech has been detected.');
-});
+// recognition.addEventListener('speechstart', () => {
+//   console.log('Speech has been detected.');
+// });
 
-recognition.addEventListener('result', (e) => {
-  console.log('Result has been detected.');
+// recognition.addEventListener('result', (e) => {
+//   console.log('Result has been detected.');
 
-  let last = e.results.length - 1;
-  let text = e.results[last][0].transcript;
+//   let last = e.results.length - 1;
+//   let text = e.results[last][0].transcript;
 
-  // outputYou.textContent = text;
-  console.log('Confidence: ' + e.results[0][0].confidence);
+//   // outputYou.textContent = text;
+//   console.log('Confidence: ' + e.results[0][0].confidence);
 
-  // socket.emit('chat message', text);
-});
+//   // socket.emit('chat message', text);
+// });
 
-recognition.addEventListener('speechend', () => {
-  recognition.stop();
-});
+// recognition.addEventListener('speechend', () => {
+//   recognition.stop();
+// });
 
-recognition.addEventListener('error', (e) => {
-  outputBot.textContent = 'Error: ' + e.error;
-});
+// recognition.addEventListener('error', (e) => {
+//   outputBot.textContent = 'Error: ' + e.error;
+// });
 
 class UserMessage extends React.Component {
   constructor(){
@@ -68,12 +68,60 @@ class UserMessage extends React.Component {
   }
 
   componentDidMount() {
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    // const database = firebase.database();
+    // const user = database.ref('user');
+
+    recognition.addEventListener('speechstart', () => {
+      console.log('Speech has been detected.');
+    });
+
+    recognition.addEventListener('result', (e) => {
+      console.log('Result has been detected.');
+
+      // let last = e.results.length - 1;
+      // let text = e.results[last][0].transcript;
+
+      // outputYou.textContent = text;
+      console.log('Confidence: ' + e.results[0][0].confidence);
+
+      // socket.emit('chat message', text);
+    });
+
+    recognition.addEventListener('speechend', () => {
+      recognition.stop();
+    });
+
+    recognition.addEventListener('error', (e) => {
+      console.log('error is,', e.error)
+      // outputBot.textContent = 'Error: ' + e.error;
+    });
+
     this.props.qValues.map((qValue, index) => {
-      this.props.synthVoice(qValue.qval); // coming twice, check later
-      if(index === this.props.qValues.length - 1) {
-        recognition.start();
-      }
+      console.log('index is,', index)
+      this.props.synthVoice(qValue.qval)
+      // if(index === this.props.qValues.length - 1) {
+      //   this.props.synthVoice('kahe ni chal rhe ho!!')
+      // }
+      // console.log('should be promise,', this.props.synthVoice(qValue.qval))
+      // this.props.synthVoice(qValue.qval).then(() => {
+      //   console.log('inside then')
+      //   if(index === this.props.qValues.length - 1) {
+      //     this.startCallNow()
+      //     // recognition.start(); // starting earlier without debugger
+      //   }
+      // }); // coming twice, check later
+      
     })
+    // this.startCallNow()
+  }
+
+  startCallNow() {
+    console.log('recognition starts')
+    recognition.start()
   }
 
   render() {

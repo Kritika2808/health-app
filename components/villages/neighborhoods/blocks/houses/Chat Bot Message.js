@@ -12,7 +12,10 @@ class ChatBotMessage extends React.Component {
   }
 
   componentDidMount() {
-    this.props.synthVoice(this.props.qTitle); // coming twice, check later
+    this.props.synthVoice(this.props.qTitle)
+    // this.props.synthVoice(this.props.qTitle).then(() => {
+    //   console.log('bot called');
+    // }); // coming twice, check later
   }
 
   render() {
