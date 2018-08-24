@@ -232,17 +232,12 @@ class SlackChannel extends React.Component {
   }
 
   synthVoice(text) {
-    
     let promise = new Promise(function(resolve, reject) {
-      
       const synth = window.speechSynthesis;
       const utterance = new SpeechSynthesisUtterance();
-      // window.speechSynthesis.cancel();
-      // const synth = window.speechSynthesis;
-      // const utterance = new SpeechSynthesisUtterance();
       utterance.text = text;
       // utterance.lang = 'hi-IN';
-      console.log('text is,', text);
+      
       utterance.onstart = function(event) {
         console.log('start for text,', event.currentTarget.text);
         console.log('The utterance started to be spoken.')
@@ -250,20 +245,17 @@ class SlackChannel extends React.Component {
         console.log('timestamp is', t);
       };
       utterance.onend = function(event) {
-        // console.log('on end called')
-        // console.log('synth voice called with,', text)
         console.log('end for text,', event.currentTarget.text);
         console.log('The utterance has ended.')
-        // console.log(event.name + ' boundary reached after ' + event.elapsedTime + ' milliseconds.');
-        // resolve(event.currentTarget.text);
         const t = event.timeStamp;
         console.log('timestamp is', t);
+        resolve(event.currentTarget.text);
       }
       utterance.onerror = function(event) {
-        console.log('inside error')
-        // reject(event.currentTarget.text)
+        console.log('inside error');
         const t = event.timeStamp;
         console.log('timestamp is', t);
+        reject(event.currentTarget.text);
       }
       window.utterances.push(utterance); // it was a chrome issue, some utterance events were not getting fired so when we keep utterance in a variable it works
       synth.speak(utterance);

@@ -102,18 +102,17 @@ class UserMessage extends React.Component {
 
     this.props.qValues.map((qValue, index) => {
       console.log('index is,', index)
-      this.props.synthVoice(qValue.qval)
+      // this.props.synthVoice(qValue.qval)
       // if(index === this.props.qValues.length - 1) {
       //   this.props.synthVoice('kahe ni chal rhe ho!!')
       // }
-      // console.log('should be promise,', this.props.synthVoice(qValue.qval))
-      // this.props.synthVoice(qValue.qval).then(() => {
-      //   console.log('inside then')
-      //   if(index === this.props.qValues.length - 1) {
-      //     this.startCallNow()
-      //     // recognition.start(); // starting earlier without debugger
-      //   }
-      // }); // coming twice, check later
+      this.props.synthVoice(qValue.qval).then(() => {
+        console.log('inside then')
+        if(index === this.props.qValues.length - 1) {
+          this.startCallNow()
+          // recognition.start(); // starting earlier without debugger
+        }
+      }); // coming twice, check later
       
     })
     // this.startCallNow()
